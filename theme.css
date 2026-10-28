@@ -918,7 +918,7 @@ a.tag:hover {
 }
 
 /* Remove inline-code decoration inside fenced blocks.
-   Section 15 sets their final text color and font. */
+   Section 15 sets their font while syntax tokens keep their colors. */
 .markdown-rendered pre code {
   background: transparent;
   border: 0;
@@ -1441,13 +1441,13 @@ button.mod-cta:hover,
   color: var(--text-muted) !important;
 }
 
-/* Preserve component colors on anchors, including links and tags.
+/* Preserve component colors on anchors and fenced code, including syntax tokens.
    :where() adds no specificity to the existing text inheritance rule. */
-.markdown-rendered p *:not(strong):not(em):where(:not(a)),
-.markdown-rendered li *:not(strong):not(em):where(:not(a)),
-.markdown-rendered blockquote *:not(strong):not(em):where(:not(a)),
-.markdown-rendered td *:not(strong):not(em):where(:not(a)),
-.markdown-rendered th *:not(strong):not(em):where(:not(a)) {
+.markdown-rendered p *:not(strong):not(em):where(:not(a):not(:is(pre, pre *))),
+.markdown-rendered li *:not(strong):not(em):where(:not(a):not(:is(pre, pre *))),
+.markdown-rendered blockquote *:not(strong):not(em):where(:not(a):not(:is(pre, pre *))),
+.markdown-rendered td *:not(strong):not(em):where(:not(a):not(:is(pre, pre *))),
+.markdown-rendered th *:not(strong):not(em):where(:not(a):not(:is(pre, pre *))) {
   color: inherit !important;
 }
 
@@ -1466,8 +1466,8 @@ button.mod-cta:hover,
   color: var(--bold-color) !important;
 }
 
-/* Design choice: fenced code uses the body font and one text color,
-   including syntax tokens, in both the editor and reading view. */
+/* Fenced code uses the body font while preserving theme and plugin syntax colors
+   in both the editor and reading view. */
 .markdown-rendered pre,
 .markdown-rendered pre code,
 .markdown-rendered pre code *,
@@ -1477,7 +1477,6 @@ button.mod-cta:hover,
 .markdown-source-view.mod-cm6 .HyperMD-codeblock .cm-line *,
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock,
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock * {
-  color: var(--seashell-selection-text) !important;
   font-family: var(--default-font) !important;
   font-weight: var(--body-font-weight);
 }
