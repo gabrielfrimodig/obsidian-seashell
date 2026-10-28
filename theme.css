@@ -21,6 +21,83 @@
  * and reading views before changing specificity or removing !important.
  */
 
+/* @settings
+name: Seashell
+id: seashell
+settings:
+  - id: seashell-reading
+    title: Reading
+    type: heading
+    level: 1
+  - id: seashell-font-help
+    title: Fonts and text size
+    description: "Choose interface, text, and monospace fonts and text size in Obsidian Settings → Appearance. Seashell provides local font fallbacks."
+    type: info-text
+  - id: seashell-line-width
+    title: Note width
+    description: "Maximum note width when Readable line length is enabled in Settings → Editor."
+    type: variable-number-slider
+    default: 760
+    min: 520
+    max: 1200
+    step: 20
+    format: px
+  - id: seashell-line-height
+    title: Line spacing
+    type: variable-number-slider
+    default: 1.7
+    min: 1.3
+    max: 2.1
+    step: 0.05
+  - id: seashell-neutral-headings
+    title: Neutral headings
+    description: "Use the normal text color instead of Seashell's heading colors."
+    type: class-toggle
+    default: false
+  - id: seashell-underline-links
+    title: Underline links
+    description: "Underline links in notes, including when a separate link snippet normally removes underlines."
+    type: class-toggle
+    default: false
+  - id: seashell-quiet-callouts
+    title: Quieter callouts
+    description: "Remove callout background fills and shadows while keeping their colored borders."
+    type: class-toggle
+    default: false
+  - id: seashell-code
+    title: Code
+    type: heading
+    level: 1
+  - id: seashell-code-scale
+    title: Code size
+    description: "Code size relative to the text size chosen in Appearance. Applies to inline code and code blocks."
+    type: variable-number-slider
+    default: 0.9
+    min: 0.75
+    max: 1.2
+    step: 0.05
+  - id: seashell-code-scroll
+    title: Scroll long code lines
+    description: "Reading view only. Scroll horizontally instead of wrapping long code lines. Editor wrapping follows Obsidian."
+    type: class-toggle
+    default: false
+  - id: seashell-colors
+    title: Colors
+    type: heading
+    level: 1
+  - id: seashell-accent-source
+    title: Accent color
+    description: "Use Seashell's accent, or follow the accent selected in Obsidian Settings → Appearance."
+    type: class-select
+    allowEmpty: false
+    default: seashell-own-accent
+    options:
+      - label: Use Seashell accent
+        value: seashell-own-accent
+      - label: Follow Obsidian accent
+        value: seashell-native-accent
+*/
+
 /* === 01. Shared palette, typography and dimensions === */
 
 :root {
@@ -46,32 +123,11 @@
   --seashell-blue-300: #86abb3;
   --seashell-shell-100: #fee3cd;
 
-  /* Fonts resolve locally. Keep the fallback order; no network assets are required. */
-  --font-text-theme:
-    "Rubik", "Glow Sans SC", -apple-system, blinkmacsystemfont, "Segoe UI",
-    roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    sans-serif;
-  --font-interface-theme:
-    "Rubik", "Glow Sans SC", -apple-system, blinkmacsystemfont, "Segoe UI",
-    roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    sans-serif;
-  --font-monospace-theme:
-    "OperatorMonoSSmLig-Book", "Glow Sans SC", "华文细黑", "STXihei",
-    "PingFang TC", "微软雅黑体", "Microsoft YaHei New", "微软雅黑",
-    "Microsoft Yahei", "宋体", "SimSun", "Helvetica Neue", "Helvetica", arial,
-    sans-serif;
-  --default-font:
-    "Rubik", "Glow Sans SC", -apple-system, blinkmacsystemfont, "Segoe UI",
-    roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    sans-serif;
-  --default-font-size: 18px;
+  /* Optional Style Settings values have matching CSS defaults. */
+  --seashell-line-width: 760px;
+  --seashell-line-height: 1.7;
+  --seashell-code-scale: 0.9;
   --body-font-weight: 450;
-  --tag-font-family:
-    "OperatorMonoSSmLig-Book", "Glow Sans SC", "华文细黑", "STXihei",
-    "PingFang TC", "微软雅黑体", "Microsoft YaHei New", "微软雅黑",
-    "Microsoft Yahei", "宋体", "SimSun", "Helvetica Neue", "Helvetica", arial,
-    sans-serif !important;
-  --code-mono-font: "OperatorMonoSSmLig-Book";
   --seashell-note-text: var(--text-muted);
   --seashell-cta-background: #1d4850;
   --seashell-cta-background-hover: #026b87;
@@ -86,8 +142,6 @@
   --checkbox-radius: 4px;
   --divider-width: 1px;
   --border-width: 1px;
-  --file-line-width: 760px;
-  --line-height-normal: 1.7;
   --line-height-tight: 1.35;
   --icon-stroke: 1.8px;
 }
@@ -145,15 +199,7 @@
   --text-warning: var(--seashell-orange-500);
   --interactive-normal: rgb(23 56 76 / 72%);
   --interactive-hover: rgb(30 72 98 / 86%);
-  --interactive-accent: var(--seashell-orange-500);
-  --interactive-accent-hover: var(--seashell-shell-300);
-  --interactive-accent-rgb: 251, 160, 47;
   --interactive-success: var(--seashell-cyan-600);
-  --accent-h: 35;
-  --accent-s: 96%;
-  --accent-l: 59%;
-  --accent-color: var(--seashell-orange-500);
-  --accent-color-hover: var(--seashell-shell-300);
   --titlebar-background: #071117;
   --titlebar-background-focused: #0a1821;
   --ribbon-background: #071117;
@@ -216,11 +262,62 @@
   --checkbox-border-color-hover: var(--seashell-cyan-400);
 }
 
+/* Preserve the default Seashell accent without overriding Obsidian's stored hue.
+   The opt-in native mode leaves the core --color-accent variables intact. */
+body.theme-dark:not(.seashell-native-accent) {
+  --color-accent-hsl: 35, 96%, 59%;
+  --color-accent: var(--seashell-orange-500);
+  --color-accent-1: var(--seashell-orange-500);
+  --color-accent-2: var(--seashell-shell-300);
+  --interactive-accent: var(--seashell-orange-500);
+  --interactive-accent-hover: var(--seashell-shell-300);
+}
+
+body.theme-dark.seashell-native-accent {
+  --seashell-cursor: var(--color-accent);
+  --background-modifier-border-focus: var(--color-accent);
+  --text-accent: var(--color-accent);
+  --text-accent-hover: var(--color-accent-2);
+  --text-on-accent: white;
+  --text-on-accent-inverted: black;
+  --checkbox-color: var(--interactive-accent);
+  --checkbox-color-hover: var(--interactive-accent-hover);
+  --checkbox-marker-color: var(--text-on-accent);
+  --seashell-cta-background: var(--interactive-accent);
+  --seashell-cta-background-hover: var(--interactive-accent-hover);
+  --seashell-cta-text: var(--text-on-accent);
+  --seashell-cta-shadow: color-mix(
+    in srgb,
+    var(--color-accent) 16%,
+    transparent
+  );
+  --scrollbar-active-thumb-bg: color-mix(
+    in srgb,
+    var(--color-accent) 70%,
+    transparent
+  );
+}
+
 /* === 03. Shared UI variables and document defaults === */
 
 body {
-  font-family: var(--default-font);
-  font-size: var(--default-font-size);
+  /* Obsidian's --font-* chains put the user's Appearance overrides first. */
+  --font-text-theme:
+    "Rubik", "Glow Sans SC", -apple-system, blinkmacsystemfont, "Segoe UI",
+    roboto, helvetica, arial, sans-serif;
+  --font-interface-theme:
+    "Rubik", "Glow Sans SC", -apple-system, blinkmacsystemfont, "Segoe UI",
+    roboto, helvetica, arial, sans-serif;
+  --font-monospace-theme:
+    "OperatorMonoSSmLig-Book", "SFMono-Regular", menlo, monaco, consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --tag-font-family: var(--font-monospace);
+  --file-line-width: var(--seashell-line-width);
+  --line-height-normal: var(--seashell-line-height);
+  --code-size: calc(var(--font-text-size) * var(--seashell-code-scale));
+
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-medium);
 
   --metadata-label-width: 9em;
   --metadata-label-text-color: var(--text-muted);
@@ -241,7 +338,7 @@ body {
   --popover-width: 460px;
   --popover-height: 340px;
 
-  accent-color: var(--accent-color);
+  accent-color: var(--interactive-accent);
   background-color: var(--background-primary);
   text-rendering: optimizelegibility;
 }
@@ -437,7 +534,8 @@ input[type="number"]:focus,
 textarea:focus,
 select:focus {
   border-color: var(--background-modifier-border-focus);
-  box-shadow: 0 0 0 3px rgb(var(--interactive-accent-rgb), 0.15);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--interactive-accent) 15%, transparent);
 }
 
 .search-input-container::before {
@@ -466,8 +564,7 @@ select:focus {
   background: var(--background-modifier-hover);
 }
 
-/* Match navigation typography across default, hover and active states.
-   Important declarations take precedence over host state-specific fonts. */
+/* Navigation uses the interface font selected in Appearance. */
 .nav-folder-title,
 .nav-file-title,
 .nav-folder-title:hover,
@@ -476,7 +573,7 @@ select:focus {
 .nav-file-title.is-active,
 body:not(.is-grabbing) .nav-folder-title:hover,
 body:not(.is-grabbing) .nav-file-title:hover {
-  font-family: var(--default-font) !important;
+  font-family: var(--font-interface);
   font-weight: var(--body-font-weight) !important;
   font-style: normal !important;
   font-synthesis: none;
@@ -508,13 +605,13 @@ body:not(.is-grabbing) .nav-file-title:hover {
 
 .nav-file-tag {
   color: var(--text-on-accent);
-  background: rgb(var(--interactive-accent-rgb), 0.72);
+  background: color-mix(in srgb, var(--interactive-accent) 72%, transparent);
   border-radius: 999px;
 }
 
 .tree-item-flair {
   color: var(--seashell-shell-300);
-  background: rgb(var(--interactive-accent-rgb), 0.12);
+  background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
   border-radius: 999px;
 }
 
@@ -543,7 +640,11 @@ body:not(.is-grabbing) .nav-file-title:hover {
   .search-result-file-match
   .search-result-file-matched-text {
   color: var(--seashell-shell-300) !important;
-  background: rgb(var(--interactive-accent-rgb), 0.22) !important;
+  background: color-mix(
+    in srgb,
+    var(--interactive-accent) 22%,
+    transparent
+  ) !important;
   border: 0 !important;
   border-radius: 3px !important;
   box-shadow: none !important;
@@ -588,7 +689,7 @@ body:not(.is-grabbing) .nav-file-title:hover {
 
 .markdown-source-view.mod-cm6 .cm-scroller,
 .markdown-preview-view {
-  font-family: var(--font-text-theme);
+  font-family: var(--font-text);
   line-height: var(--line-height-normal);
 }
 
@@ -610,7 +711,7 @@ body:not(.is-grabbing) .nav-file-title:hover {
 .markdown-source-view.mod-cm6 .cm-content,
 .markdown-preview-view,
 .markdown-rendered {
-  font-size: 16.5px;
+  font-size: var(--font-text-size);
 }
 
 .markdown-source-view.mod-cm6.is-readable-line-width .cm-content,
@@ -898,15 +999,16 @@ a.tag:hover {
     color-mix(in srgb, var(--background-modifier-border) 78%, transparent);
   border-radius: 5px;
   padding: 0.12em 0.34em;
-  font-size: 0.9em;
-  font-family: var(--code-mono-font), var(--font-monospace-theme);
+  font-size: var(--code-size);
+  font-family: var(--font-monospace);
 }
 
 .markdown-rendered pre {
   background: var(--code-background);
   border: 1px solid var(--background-modifier-border);
   border-radius: 18px;
-  overflow: hidden;
+  overflow-x: auto;
+  white-space: var(--code-white-space);
   padding: 1em;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
 }
@@ -918,11 +1020,12 @@ a.tag:hover {
 }
 
 /* Remove inline-code decoration inside fenced blocks.
-   Section 15 sets their final text color and font. */
+   Code inherits its monospace font; syntax tokens keep their colors. */
 .markdown-rendered pre code {
   background: transparent;
   border: 0;
   padding: 0;
+  font-size: inherit;
 }
 
 .token.comment,
@@ -957,8 +1060,11 @@ a.tag:hover {
 }
 
 .token.operator,
+.cm-operator {
+  color: var(--code-operator);
+}
+
 .token.punctuation,
-.cm-operator,
 .cm-punctuation {
   color: var(--code-punctuation);
 }
@@ -1343,7 +1449,7 @@ button.mod-cta:hover,
 .canvas-node.is-selected .canvas-node-container {
   border-color: var(--interactive-accent);
   box-shadow:
-    0 0 0 3px rgb(var(--interactive-accent-rgb), 0.16),
+    0 0 0 3px color-mix(in srgb, var(--interactive-accent) 16%, transparent),
     0 16px 40px rgb(0 0 0 / 24%);
 }
 
@@ -1366,13 +1472,14 @@ button.mod-cta:hover,
 /* === 14. Feedback and community settings === */
 
 .is-flashing:not(.nav-folder-title) {
-  --background-modifier-border-focus: var(--seashell-orange-500);
+  --background-modifier-border-focus: var(--interactive-accent);
 
-  box-shadow: 0 0 0 3px rgb(var(--interactive-accent-rgb), 0.2);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--interactive-accent) 20%, transparent);
 }
 
 .workspace-drop-overlay {
-  background: rgb(var(--interactive-accent-rgb), 0.16);
+  background: color-mix(in srgb, var(--interactive-accent) 16%, transparent);
   border: 2px solid var(--interactive-accent);
 }
 
@@ -1421,7 +1528,7 @@ button.mod-cta:hover,
 .markdown-rendered blockquote,
 .markdown-rendered td,
 .markdown-rendered th {
-  font-family: var(--default-font) !important;
+  font-family: var(--font-text);
   font-weight: var(--body-font-weight);
 }
 
@@ -1429,28 +1536,11 @@ button.mod-cta:hover,
 .inline-title[data-level],
 .markdown-source-view.mod-cm6 .inline-title,
 .markdown-preview-view .inline-title {
-  font-family: var(--default-font) !important;
+  font-family: var(--font-text);
 }
 
-.markdown-rendered p,
-.markdown-rendered li,
-.markdown-rendered blockquote,
-.markdown-rendered blockquote p,
-.markdown-rendered td,
-.markdown-rendered th {
-  color: var(--text-muted) !important;
-}
-
-/* Preserve component colors on anchors, including links and tags.
-   :where() adds no specificity to the existing text inheritance rule. */
-.markdown-rendered p *:not(strong):not(em):where(:not(a)),
-.markdown-rendered li *:not(strong):not(em):where(:not(a)),
-.markdown-rendered blockquote *:not(strong):not(em):where(:not(a)),
-.markdown-rendered td *:not(strong):not(em):where(:not(a)),
-.markdown-rendered th *:not(strong):not(em):where(:not(a)) {
-  color: inherit !important;
-}
-
+/* Let descendants inherit text colors naturally, so plugin and inline styles
+   can supply their own colors without competing with blanket overrides. */
 .markdown-rendered p strong,
 .markdown-rendered li strong,
 .markdown-rendered blockquote strong,
@@ -1466,26 +1556,49 @@ button.mod-cta:hover,
   color: var(--bold-color) !important;
 }
 
-/* Design choice: fenced code uses the body font and one text color,
-   including syntax tokens, in both the editor and reading view. */
+/* Font containers, not every descendant: copy buttons and plugin elements
+   retain their own fonts and syntax tokens retain their colors. */
 .markdown-rendered pre,
-.markdown-rendered pre code,
-.markdown-rendered pre code *,
-.markdown-source-view.mod-cm6 .HyperMD-codeblock,
-.markdown-source-view.mod-cm6 .HyperMD-codeblock *,
-.markdown-source-view.mod-cm6 .HyperMD-codeblock .cm-line,
-.markdown-source-view.mod-cm6 .HyperMD-codeblock .cm-line *,
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock,
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock * {
-  color: var(--seashell-selection-text) !important;
-  font-family: var(--default-font) !important;
-  font-weight: var(--body-font-weight);
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  font-family: var(--font-monospace);
+  font-size: var(--code-size);
+  font-weight: var(--font-normal);
+}
+
+/* Optional controls only add classes or variables; the theme works without
+   Style Settings and never changes Obsidian's saved Appearance preferences. */
+body.seashell-neutral-headings {
+  --h1-color: var(--text-normal);
+  --h2-color: var(--text-normal);
+  --h3-color: var(--text-normal);
+  --h4-color: var(--text-normal);
+  --h5-color: var(--text-normal);
+  --h6-color: var(--text-normal);
+}
+
+/* This explicit opt-in also wins over local snippets that hide underlines. */
+body.seashell-underline-links .markdown-rendered a,
+body.seashell-underline-links .cm-hmd-internal-link,
+body.seashell-underline-links .cm-link,
+body.seashell-underline-links .cm-underline {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
+body.seashell-quiet-callouts .callout,
+body.seashell-quiet-callouts .callout-title {
+  background: transparent;
+  box-shadow: none;
+}
+
+body.seashell-code-scroll {
+  --code-white-space: pre;
 }
 
 /* === 16. Narrow windows and mobile layout === */
 
 @media (max-width: 760px) {
-  :root {
+  body {
     --file-line-width: 100%;
   }
 
